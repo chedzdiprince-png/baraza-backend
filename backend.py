@@ -35,6 +35,19 @@ import time
 
 app = Flask(__name__)
 
+# Allow the storefront (hosted on a different domain) to call this backend.
+@app.after_request
+def add_cors_headers(response):
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    return response
+
+@app.route("/api/checkout", methods=["OPTIONS"])
+@app.route("/api/paystack/webhook", methods=["OPTIONS"])
+def handle_options():
+    return "", 200
+
 # ---------------------------------------------------------------
 # CONFIG — for local testing you can paste values here directly.
 # For anything real/deployed, use environment variables instead
